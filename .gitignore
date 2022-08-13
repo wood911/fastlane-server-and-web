@@ -1,0 +1,7 @@
+# idea
+.gradle
+.idea/
+!.idea/icon*.png
+*.iml
+build/
+src/main/gen

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>UDID助手</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--snackbar布局-->
+    <style type="text/css">
+        /* The snackbar - position it at the bottom and in the middle of the screen */
+        #snackbar {
+            visibility: hidden; /* Hidden by default. Visible on click */
+            min-width: 250px; /* Set a default minimum width */
+            margin-left: -125px; /* Divide value of min-width by 2 */
+            background-color: #333; /* Black background color */
+            color: #fff; /* White text color */
+            text-align: center; /* Centered text */
+            border-radius: 2px; /* Rounded borders */
+            padding: 16px; /* Padding */
+            position: fixed; /* Sit on top of the screen */
+            z-index: 1; /* Add a z-index if needed */
+            left: 50%; /* Center the snackbar */
+            bottom: 30px; /* 30px from the bottom */
+        }
+
+        /* Show the snackbar when clicking on a button (class added with JavaScript) */
+        #snackbar.show {
+            visibility: visible; /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+            However, delay the fade out process for 2.5 seconds */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        /* Animations to fade the snackbar in and out */
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+    <style type="text/css">
+        body {
+            text-align: center;
+        }
+        .content {
+            text-align: left;
+            margin: 50px 10% 40px 10%;
+            padding: 20px 0 20px 20px;
+            background-color: #f6f6f6;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: medium;
+        }
+
+        .email-container p {
+            font-size: small;
+            color: #666666;
+        }
+        .email {
+            width: 66%;
+            height: 40px;
+            border-radius: 10px;
+            padding: 0 10px;
+            border-color: #dddddd;
+            border-width: 1px;
+        }
+        .button {
+            color: white;
+            font-size: medium;
+            width: 100px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #28caad;
+            margin-top: 20px;
+        }
+
+        .wrapper {
+            /*position: absolute;*/
+            width: 100px;
+            height: 100px;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            display: flex;
+        }
+        .container {
+            font-size: small;
+        }
+
+    </style>
+    <script type="text/javascript">
+        function showPage () {
+            var index = location.href.indexOf('?');
+            if (index !== -1) {
+              var array = location.href.substr(index + 1).split('&');
+              var deviceInfo = {};
+              array.forEach(function (value) {
+                var arr = value.split('=');
+                if (arr.length === 2) {
+                  deviceInfo[arr[0]] = decodeURIComponent(arr[1].trim());
+                }
+              })
+              window.deviceInfo = deviceInfo;
+              document.getElementById('IMEI').innerText = deviceInfo["IMEI"];
+              document.getElementById('PRODUCT').innerText = deviceInfo["PRODUCT"];
+              document.getElementById('UDID').innerText = deviceInfo["UDID"];
+              document.getElementById('VERSION').innerText = deviceInfo["VERSION"];
+            }
+        }
+        function validateEmail(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+        function submit () {
+            var email = document.getElementsByClassName("email")[0].value || "";
+            if (!validateEmail(email)) {
+                showSnackbar("请输入有效的邮箱");
+                return
+            }
+            var submitBtn = document.getElementsByClassName("button")[0];
+            submitBtn.disabled = true;
+            submitBtn.innerText = "发送中...";
+            var httpRequest = new XMLHttpRequest();
+            var url = location.origin + location.pathname.replace("udid.html", "") + "email";
+            httpRequest.open('POST', url, true);
+            httpRequest.setRequestHeader("Content-type","application/json");
+            var obj = window.deviceInfo;
+            obj.email = email.trim();
+            httpRequest.send(JSON.stringify(obj));
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === 4 && httpRequest.status === 200) {
+                    var result = JSON.parse(httpRequest.responseText);
+                    console.log(result);
+                    showSnackbar(result["msg"]);
+                    if (result.code === 0) { // 成功
+
+                    } else {
+                        showSnackbar(result["msg"]);
+                    }
+                } else {
+                    showSnackbar("Error(" + httpRequest.status + ") Please try again later");
+                }
+                submitBtn.innerText = "Submit";
+                submitBtn.disabled = false;
+            };
+        }
+
+        function showSnackbar(msg) {
+            // Get the snackbar DIV
+            var x = document.getElementById("snackbar");
+            // Add the "show" class to DIV
+            x.className = "show";
+            x.innerText = msg;
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+    </script>
+</head>
+<body onload="showPage()">
+    <div class="content">
+        <p>IMEI：<span id="IMEI"></span></p>
+        <p>PRODUCT：<span id="PRODUCT"></span></p>
+        <p>UDID：<span id="UDID"></span></p>
+        <p>VERSION：<span id="VERSION"></span></p>
+    </div>
+    <p>正在准备中</p>
+    <div class="wrapper">
+        <div class="container chart" data-size="100" data-value="100" data-arrow="down"></div>
+    </div>
+    <div class="email-container">
+        <p>如果失败可以发送UDID到开发者邮箱</p>
+        <input class="email" type="email" max="30" placeholder="请输入邮箱" value="j02358@kok.work">
+        <br/>
+        <button class="button" type="submit" onclick="submit()">Submit</button>
+    </div>
+    <!-- The actual snackbar -->
+    <div id="snackbar">请输入有效的邮箱</div>
+</body>
+<!--进度条动画-->
+<script type="text/javascript">
+  class Dial {
+    constructor(container) {
+      this.container = container;
+      this.size = this.container.dataset.size;
+      this.strokeWidth = this.size / 8;
+      this.radius = this.size / 2 - this.strokeWidth / 2;
+      this.value = this.container.dataset.value;
+      this.direction = this.container.dataset.arrow;
+      this.svg;
+      this.defs;
+      this.slice;
+      this.overlay;
+      this.text;
+      this.arrow;
+      this.create();
+    }
+
+    create() {
+      this.createSvg();
+      this.createDefs();
+      this.createSlice();
+      this.createOverlay();
+      this.createText();
+      this.createArrow();
+      this.container.appendChild(this.svg);
+    }
+
+    createSvg() {
+      let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", `${this.size}px`);
+      svg.setAttribute("height", `${this.size}px`);
+      this.svg = svg;
+    }
+
+    createDefs() {
+      var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"),
+          linearGradient = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "linearGradient"
+          ),
+          stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
+          stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
+          linearGradientBackground = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "background"
+          );
+      linearGradient.setAttribute("id", "gradient");
+      stop1.setAttribute("stop-color", "#ffa000");
+      stop1.setAttribute("offset", "0%");
+      linearGradient.appendChild(stop1);
+      stop2.setAttribute("stop-color", "#f25767");
+      stop2.setAttribute("offset", "100%");
+      linearGradient.appendChild(stop2);
+      linearGradientBackground.setAttribute("id", "gradient-background");
+      var stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+      stop1.setAttribute("stop-color", "rgba(0,0,0,0.2)");
+      stop1.setAttribute("offset", "0%");
+      linearGradientBackground.appendChild(stop1);
+      var stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+      stop2.setAttribute("stop-color", "rgba(0,0,0,0.5)");
+      stop2.setAttribute("offset", "1000%");
+      linearGradientBackground.appendChild(stop2);
+      defs.appendChild(linearGradient);
+      defs.appendChild(linearGradientBackground);
+      this.svg.appendChild(defs);
+      this.defs = defs;
+    }
+
+    createSlice() {
+      let slice = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      slice.setAttribute("fill", "none");
+      slice.setAttribute("stroke", "url(#gradient)");
+      slice.setAttribute("stroke-width", this.strokeWidth);
+      slice.setAttribute(
+          "transform",
+          `translate(${this.strokeWidth / 2},${this.strokeWidth / 2})`
+      );
+      slice.setAttribute("class", "animate-draw");
+      this.svg.appendChild(slice);
+      this.slice = slice;
+    }
+
+    createOverlay() {
+      const r = this.size - this.size / 2 - this.strokeWidth / 2;
+      const circle = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle"
+      );
+      circle.setAttribute("cx", this.size / 2);
+      circle.setAttribute("cy", this.size / 2);
+      circle.setAttribute("r", r);
+      circle.setAttribute("fill", "url(#gradient-background)");
+      circle.setAttribute("class", "animate-draw");
+      this.svg.appendChild(circle);
+      this.overlay = circle;
+    }
+
+    createText() {
+      const fontSize = this.size / 3.5;
+      let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", this.size / 2 + fontSize / 7.5);
+      text.setAttribute("y", this.size / 2 + fontSize / 4);
+      text.setAttribute("font-family", "Century Gothic Lato");
+      text.setAttribute("font-size", fontSize);
+      text.setAttribute("fill", "#ed4a5d");
+      text.setAttribute("text-anchor", "middle");
+      const tspanSize = fontSize / 3;
+      text.innerHTML = `${0}% `;
+      this.svg.appendChild(text);
+      this.text = text;
+    }
+
+    createArrow() {
+      var arrowSize = this.size / 10;
+      var mapDir = {
+        up: [(arrowYOffset = arrowSize / 2), (m = -1)],
+        down: [(arrowYOffset = 0), (m = 1)]
+      };
+      function getDirection(i) {
+        return mapDir[i];
+      }
+      var [arrowYOffset, m] = getDirection(this.direction);
+
+      let arrowPosX = this.size / 2 - arrowSize / 2,
+          arrowPosY = this.size - this.size / 3 + arrowYOffset,
+          arrowDOffset = m * (arrowSize / 1.5),
+          arrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      arrow.setAttribute(
+          "d",
+          `M 0 0 ${arrowSize} 0 ${arrowSize / 2} ${arrowDOffset} 0 0 Z`
+      );
+      arrow.setAttribute("fill", "none");
+      arrow.setAttribute("opacity", "0.6");
+      arrow.setAttribute("transform", `translate(${arrowPosX},${arrowPosY})`);
+      this.svg.appendChild(arrow);
+      this.arrow = arrow;
+    }
+
+    animateStart() {
+      let v = 0;
+      const intervalOne = setInterval(() => {
+        const p = +(v / this.value).toFixed(2);
+        const a = p < 0.95 ? 2 - 2 * p : 0.05;
+        v += a;
+        if (v >= +this.value) {
+          v = this.value;
+          clearInterval(intervalOne);
+          window.location.href = window.location.origin + "/web";
+        }
+        this.setValue(v);
+      }, 300);
+    }
+
+    polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+      const angleInRadians = ((angleInDegrees - 180) * Math.PI) / 180.0;
+      return {
+        x: centerX + radius * Math.cos(angleInRadians),
+        y: centerY + radius * Math.sin(angleInRadians)
+      };
+    }
+
+    describeArc(x, y, radius, startAngle, endAngle) {
+      const start = this.polarToCartesian(x, y, radius, endAngle);
+      const end = this.polarToCartesian(x, y, radius, startAngle);
+      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+      const d = [
+        "M",
+        start.x,
+        start.y,
+        "A",
+        radius,
+        radius,
+        0,
+        largeArcFlag,
+        0,
+        end.x,
+        end.y
+      ].join(" ");
+      return d;
+    }
+
+    setValue(value) {
+      let c = (value / 100) * 360;
+      if (c === 360) c = 359.99;
+      const xy = this.size / 2 - this.strokeWidth / 2;
+      const d = this.describeArc(xy, xy, xy, 180, 180 + c);
+      this.slice.setAttribute("d", d);
+      const tspanSize = this.size / 3.5 / 3;
+      this.text.innerHTML = `${Math.floor(value)}% `;
+    }
+
+    animateReset() {
+      this.setValue(0);
+    }
+  }
+
+  const containers = document.getElementsByClassName("chart");
+  const dial = new Dial(containers[0]);
+  dial.animateStart();
+</script>
+</html>

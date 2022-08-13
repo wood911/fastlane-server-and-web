@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>upload</title>
+    <style type="text/css">
+        body {
+            color: #333333;
+            background-color: #EDF1F4;
+        }
+        body div {
+            background-color: white;
+            border-width: 1px;
+            border-color: #dddddd;
+            width: 80%;
+            height: 500px;
+            padding: 5% 10% 8% 10%;
+        }
+        form {
+            font-size: 14px;
+        }
+        form #submit {
+            background-color: #28caad;
+            padding: 8px 20px;
+            border-color: #dddddd;
+            border-radius: 20px;
+            color: white;
+        }
+        h5 {
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h2>iOS 证书在线检测</h2>
+    <h5>想检查证书到期时间？用户反馈无法下载安装？在线检测 iOS 证书是否正常</h5>
+    <form action="/cert/check" method="POST" enctype="multipart/form-data">
+        请上传p12证书：
+        <input type="file" name="file" accept="application/x-pkcs12" />
+        <br/>
+        <br/>
+        请输入密码：<input type="password" name="password" />
+        <br/>
+        <br/>
+        <input id="submit" type="submit" value="立即检测" />
+    </form>
+</div>
+</body>
+</html>
