@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>绑定公众号</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style type="text/css">
+        body {
+            text-align: center;
+        }
+        .content {
+            margin: 50px 10%;
+            padding: 20px;
+            background-color: #f6f6f6;
+            border-radius: 20px;
+            font-size: medium;
+        }
+    </style>
+</head>
+<body onload="showPage()">
+    <div class="content">
+        <img src="data:image/png;base64,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" />
+        <p>绑定成功，请返回</p>
+    </div>
+</body>
+</html>

@@ -5,7 +5,7 @@
 	<key>PayloadContent</key>
 	<dict>
 		<key>URL</key>
-		<string>https://metamiss.site/app/udid</string>
+		<string>https://www.youran.space/app/udid</string>
 		<key>DeviceAttributes</key>
 		<array>
 			<string>UDID</string>
@@ -16,13 +16,13 @@
 		</array>
 	</dict>
 	<key>PayloadOrganization</key>
-	<string>metamiss.site</string>
+	<string>www.youran.space</string>
 	<key>PayloadDisplayName</key>
 	<string>UDID助手</string>
 	<key>PayloadVersion</key>
 	<integer>1</integer>
 	<key>PayloadUUID</key>
-	<string>8C7AD0B8-3900-44DF-A52F-3C4F94231807</string>
+	<string>8C7AD0B8-3900-44DF-A52F-3C4F94235804</string>
 	<key>PayloadIdentifier</key>
 	<string>com.udid.profile-service</string>
 	<key>PayloadDescription</key>

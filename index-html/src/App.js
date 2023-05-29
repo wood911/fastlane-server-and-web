@@ -16,7 +16,7 @@ class App extends React.Component {
     const device = new DeviceDetector().parse(navigator.userAgent);
     this.state = {
       isLoading: true,
-      url: "https://metamiss.site/app/download/config.json",
+      url: "https://bigtick.space/app/download/config.json",
       device: device,
       list: [],
       current: null,
@@ -109,7 +109,7 @@ class App extends React.Component {
           }
           {
             device.os.name === 'iOS' || true ?
-                <a href="https://metamiss.site/app/udid.mobileconfig"
+                <a href="https://bigtick.space/app/udid.mobileconfig"
                    className="App-help">若无法安装请点此下载描述文件</a> : null
           }
           <canvas ref={this.ref} />

@@ -20,7 +20,7 @@ public class ApiResult implements Serializable {
         return new ApiResult(0, "success", new HashMap<>());
     }
 
-    public static ApiResult ok(Map<String, Object> data) {
+    public static ApiResult ok(Object data) {
         return new ApiResult(0, "success", data);
     }
 }
