@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>youran home</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style type="text/css">
+        body {
+            text-align: center;
+        }
+        .content {
+            text-align: left;
+            margin: 50px 10% 40px 10%;
+            padding: 20px 0 20px 20px;
+            background-color: #f6f6f6;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: medium;
+        }
+    </style>
+</head>
+<body>
+    <p class="email-container">客户苹果手机设备ID信息，上报给开发者</p>
+    <div class="content">
+        <p>IMEI：<span th:text="${IMEI}"></span></p>
+        <p>PRODUCT：<span th:text="${PRODUCT}"></span></p>
+        <p>UDID：<span th:text="${UDID}"></span></p>
+        <p>VERSION：<span th:text="${VERSION}"></span></p>
+    </div>
+</body>
+</html>

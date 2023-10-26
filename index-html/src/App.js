@@ -16,7 +16,7 @@ class App extends React.Component {
     const device = new DeviceDetector().parse(navigator.userAgent);
     this.state = {
       isLoading: true,
-      url: "https://bigtick.space/app/download/config.json",
+      url: "https://www.youran.space/app/download/config.json",
       device: device,
       list: [],
       current: null,
@@ -109,9 +109,12 @@ class App extends React.Component {
           }
           {
             device.os.name === 'iOS' || true ?
-                <a href="https://bigtick.space/app/udid.mobileconfig"
+                <a href="https://www.youran.space/app/udid.mobileconfig"
                    className="App-help">若无法安装请点此下载描述文件</a> : null
           }
+          <br/>
+          <a href="https://www.youran.space/app/download/help.pdf"
+             className="App-help">查看帮助教程</a>
           <canvas ref={this.ref} />
           <div className="App-line"> </div>
           <p>历史版本</p>

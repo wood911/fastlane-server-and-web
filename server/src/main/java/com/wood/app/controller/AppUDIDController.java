@@ -85,7 +85,8 @@ public class AppUDIDController {
             e.printStackTrace();
         }
 
-        sendRequest(entity);
+//        sendRequest(entity);
+        saveLocal(entity);
 
         // 301之后iOS设备会自动打开safari浏览器，不设置会导致app安装描述文件失败
         RedirectView redirectView = new RedirectView("udid.html");
@@ -133,7 +134,6 @@ public class AppUDIDController {
             String udid = entity.getUDID();
             List<String> list = new ArrayList<>();
             list.add(devicePath);
-            list.add(deviceMasterPath);
             for (String s : list) {
                 File file = new File(s);
                 String content = readFile(file);
@@ -153,6 +153,27 @@ public class AppUDIDController {
             return ApiResult.ok();
         }
         return new ApiResult(-1008, "无法获取UDID", null);
+    }
+
+    private void saveLocal(UDIDEntity entity) {
+        String udid = entity.getUDID();
+        List<String> list = new ArrayList<>();
+        list.add(devicePath);
+        list.add(deviceMasterPath);
+        for (String s : list) {
+            File file = new File(s);
+            String content = readFile(file);
+            if (content != null && !udid.isEmpty() && !content.contains(udid)) {
+                String builder = content + "\n" +
+                        udid +
+                        "\t" +
+                        entity.getPRODUCT();
+                writeFile(file, builder);
+                logger.debug("成功添加UDID(" + udid + ")到文件" + file.getName());
+            } else {
+                logger.debug(file.getName() + "已经包含该UDID(" + udid + ")");
+            }
+        }
     }
 
     private String readFile(File file) {

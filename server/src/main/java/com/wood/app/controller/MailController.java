@@ -38,14 +38,4 @@ public class MailController {
         return result;
     }
 
-//    @RequestMapping("/email")
-//    public ModelAndView hello(String email) {
-//        System.out.println("email=" + email);
-//        emailService.sendMail(email, "你好", "测试邮件");
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.addObject("text", "邮件发送成功");
-//        modelAndView.setViewName("success.html");
-//        return modelAndView;
-//    }
-
 }
